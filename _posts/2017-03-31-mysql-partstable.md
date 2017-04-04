@@ -1,9 +1,9 @@
 ---
 layout: post
-title:  "测试"
-date:   2017-04-02 12:04:18 +0800
+title:  "关于数据库分表"
+date:   2017-03-31 11:23:18 +0800
 categories: what
-tags:  play
+tags:  数据库 mysql 分表
 author: Aspirezh
 ---
 
