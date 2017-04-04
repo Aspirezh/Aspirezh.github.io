@@ -1,9 +1,9 @@
 ---
 layout: post
-title:  "关于数据库分表"
-date:   2017-03-31 11:23:18 +0800
-categories: what
-tags:  数据库 mysql 分表
+title:  "基础php引用"
+date:   2016-12-13 22:58:18 +0800
+categories: 基础php引用
+tags:  递归 引用
 author: Aspirezh
 ---
 
