@@ -1,15 +1,14 @@
 ﻿---
 layout: post
-title:  "Laravel—中间操作流（Builder）miss error"
+title:  "Laravel—中间操作流(Builder)miss error"
 date:   2016-12-13 22:58:18 +0800
-categories: Laravel—中间操作流（Builder）miss error
-tags:Laravel Builder  中间操作流
+categories: Laravel—中间操作流(Builder)
+tags:   Laravel Builder  中间操作流
 author: Aspirezh
 ---
 
 * content
 {:toc}
-
 
 首先，数据库大都是链式操作，在laravel中，出现一个builder的定义，可以理解为中间流操作，或者是中间构造器。
 
