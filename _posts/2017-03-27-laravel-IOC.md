@@ -1,103 +1,84 @@
 ﻿---
 layout: post
-title:  "测试"
-date:   2017-04-02 12:04:18 +0800
-categories: what
-tags:  play
+title:  "laravel关于服务提供者的再次理解"
+date:   2017-03-27 23:23:32 +0800
+categories: Laravel—中间操作流
+tags:  IoC laravel
 author: Aspirezh
 ---
 
 * content
 {:toc}
 
-关于写倒计时大家可能都都比较熟悉，使用 setTimeout 或 setInterval 就可以搞定。几秒钟或者几分钟的倒计时这样写没有问题，但是如果是长时间的倒计时，这样写就会不准确。如果用户修改了他的设备时间，这样的倒计时就没有意义了。今天就说说写一个精确的倒计时的方法。
-
-![](https://img.alicdn.com/tfs/TB18QnlOpXXXXcVXpXXXXXXXXXX-388-256.png)
+关于laravel基本架构的理解，有助于我们的学习和使用laravel的许多功能，今天用到包开发的内容，感觉前面对IOC的理解又加深了一些。
 
 
 
+## 介绍：
 
-## 原理
+首先，要知道包开发是什么
 
-众所周知 setTimeout 或者 setInterval 调用的时候会有微小的误差。有人做了一个 [demo](https://bl.ocks.org/kenpenn/raw/92ebaa71696b4c4c3acd672b1bb3f49a/) 来观察这个现象并对其做了修正。短时间的误差倒也可以接受，但是作为一个长时间的倒计时，误差累计就会导致倒计时不准确。
+Packages are the primary way of adding functionality to Laravel. Packages might be anything from a great way to work with dates like Carbon, or an entire BDD testing framework like Behat.
 
-因此我们可以在获取剩余时间的时候，每次 new 一个设备时间，因为设备时间的流逝相对是准确的，并且如果设备打开了网络时间同步，也会解决这个问题。
+Of course, there are different types of packages. Some packages are stand-alone, meaning they work with any framework, not just Laravel. Both Carbon and Behat are examples of stand-alone packages. Any of these packages may be used with Laravel by simply requesting them in your  composer.json file.
 
-但是，如果用户修改了设备时间，那么整个倒计时就没有意义了，用户只要将设备时间修改为倒计时的 endTime 就可以轻易看到倒计时结束是页面的变化。因此一开始获取服务端时间就是很重要的。
+On the other hand, other packages are specifically intended for use with Laravel. These packages may have routes, controllers, views, and configuration specifically intended to enhance a Laravel application. This guide primarily covers the development of those packages that are Laravel specific.
+包是添加功能到 Laravel 的主要方式。包可以提供任何功能，小到处理日期如 Carbon，大到整个 BDD 测试框架如 Behat。
 
-简单的说，一个简单的精确倒计时原理如下：
+当然，有很多不同类型的包。有些包是独立的，意味着可以在任何框架中使用，而不仅是 Laravel。比如 Carbon 和 Behat 都是独立的包。所有这些包都可以通过在composer.json文件中请求以便被 Laravel 使用。
+## 服务提供者
+服务提供者是包和 Laravel 之间的连接点。服务提供者负责绑定对象到 Laravel 的服务容器并告知 Laravel 从哪里加载包资源如视图、配置和本地化文件。
 
-- 初始化时请求一次服务器时间 serverTime，再 new 一个设备时间 deviceTime
-- deviceTime 与 serverTime 的差作为时间偏移修正
-- 每次递归时 new 一个系统时间，解决 setTimeout 不准确的问题
+服务提供者继承自Illuminate\Support\ServiceProvider类并包含两个方法：register和boot。ServiceProvider基类位于Composer包illuminate/support。
 
-## 代码
+服务提供者可以在项目的任何地方设置:
 
-获取剩余时间的代码如下：
+eg:在根目录下创建文件夹 packages/jai/contact/src
 
-```js
-/**
- * 获取剩余时间
- * @param  {Number} endTime    截止时间
- * @param  {Number} deviceTime 设备时间
- * @param  {Number} serverTime 服务端时间
- * @return {Object}            剩余时间对象
- */
-let getRemainTime = (endTime, deviceTime, serverTime) => {
-    let t = endTime - Date.parse(new Date()) - serverTime + deviceTime
-    let seconds = Math.floor((t / 1000) % 60)
-    let minutes = Math.floor((t / 1000 / 60) % 60)
-    let hours = Math.floor((t / (1000 * 60 * 60)) % 24)
-    let days = Math.floor(t / (1000 * 60 * 60 * 24))
-    return {
-        'total': t,
-        'days': days,
-        'hours': hours,
-        'minutes': minutes,
-        'seconds': seconds
+进入src目录并创建一个服务提供者ContactServiceprovider.php
+
+这就创建了一个服务提供者，它提供方法，连接你的包和项目
+
+服务提供者具有这几种方法：
+
+boot()方法：引入路由文件；
+                    引入包视图-》loadViewsFrom()方法；
+                    发布视图；
+                    发布翻译文件；
+                    发布前端资源
+还可以自定义你的路由，或者一些注册方法：
+
+```
+public function setupRoutes(Router $router)
+    {
+        $router->group(['namespace' => 'Jai\Contact\Http\Controllers'], function($router)
+        {
+            require __DIR__.'/Http/routes.php';
+        });
     }
-}
+
+    public function register()
+    {
+        $this->registerContact();
+        config([
+            'config/contact.php',
+        ]);
+    }
+    private function registerContact()
+    {
+        $this->app->bind('contact',function($app){
+            return new Contact($app);
+        });
+    }
 ```
+## 路由
+重要的路由文件，其实现在已经很简单了 
+在服务提供者里引入路由文件后，在定义路由的时候就很方便了 ，和在框架中的路由设置一样：
 
-<del>获取服务器时间可以使用 mtop 接口 `mtop.common.getTimestamp` </del>
-
-然后可以通过下面的方式来使用：
-
-```js
-// 获取服务端时间（获取服务端时间代码略）
-getServerTime((serverTime) => {
-
-    //设置定时器
-    let intervalTimer = setInterval(() => {
-
-        // 得到剩余时间
-        let remainTime = getRemainTime(endTime, deviceTime, serverTime)
-
-        // 倒计时到两个小时内
-        if (remainTime.total <= 7200000 && remainTime.total > 0) {
-            // do something
-
-        //倒计时结束
-        } else if (remainTime.total <= 0) {
-            clearInterval(intervalTimer);
-            // do something
-        }
-    }, 1000)
-})
 ```
-
-这样的的写法也可以做到准确倒计时，同时也比较简洁。不需要隔段时间再去同步一次服务端时间。
-
-## 补充
-
-在写倒计时的时候遇到了一个坑这里记录一下。
-
-**千万别在倒计时结束的时候请求接口**。会让服务端瞬间 QPS 峰值达到非常高。
-
-![](https://img.alicdn.com/tfs/TB1LBzjOpXXXXcnXpXXXXXXXXXX-154-71.png)
-
-如果在倒计时结束的时候要使用新的数据渲染页面，正确的做法是：
-
-在倒计时结束前的一段时间里，先请求好数据，倒计时结束后，再渲染页面。
-
-关于倒计时，如果你有什么更好的解决方案，欢迎评论交流。
+public function boot(){
+    if (! $this->app->routesAreCached()) {
+        require __DIR__.'/../../routes.php';
+    }
+```
+这样，路由就在我们的app/Http/route.php,也可以自己再定义一个路由文件，和我们原生的路由分开。
