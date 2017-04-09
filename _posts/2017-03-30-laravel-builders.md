@@ -1,9 +1,9 @@
 ﻿---
 layout: post
-title:  "Laravel—中间操作流(Builder)miss error"
+title:  "基础php引用"
 date:   2016-12-13 22:58:18 +0800
-categories: Laravel—中间操作流(Builder)
-tags:   Laravel Builder  中间操作流
+categories: 基础php引用
+tags:  递归 引用
 author: Aspirezh
 ---
 
