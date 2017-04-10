@@ -1,9 +1,9 @@
 ---
 layout: post
-title:  "写一个函数，能够遍历一个文件夹下的所有文件和子文件夹"
-date:   2016-12-12 12:11 +0800
-categories: 遍历
-tags:  遍历 php函数
+title:  "laravel Eloquent:Collection"
+date:   2016-12-30 21:55 +0800
+categories: laravel
+tags:  laravel
 author: Aspirezh
 mathjax: true
 ---
