@@ -19,9 +19,9 @@ mathjax: true
 ## 理解
 
 laravel Eloquent:Collection
-<h3>**详细文档地址**<h3>
+###详细文档地址
 
-<h4>[链接](https://laravel.com/docs/5.3/eloquent-collections)
+[链接](https://laravel.com/docs/5.3/eloquent-collections)
 
 下面是我关于对Eloquent:collection的理解：
 在上一篇中提到过一个对象builder，Illuminate\Database\Eloquent\Builder
@@ -103,4 +103,4 @@ $value = $collection->get('name');
 转化为数组、json
 
 
-<h4>**手上能经常碰到的 遇到问题的话  最好去找手册，把常用的记住就ok了**
+##手上能经常碰到的 遇到问题的话  最好去找手册，把常用的记住就ok了
