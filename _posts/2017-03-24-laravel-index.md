@@ -253,8 +253,9 @@ public function register($provider, $options = [], $force = false)
     return $provider;
 }
 ```
-这些ServiceProvider是 Illuminate\Support\ServiceProvider 的子类，它接受一个 Application 对象作为构造函数参数，存储在实例变量 $app 中。<h2>
-**注入所有基础 Service Provider**<h2>
+这些ServiceProvider是 Illuminate\Support\ServiceProvider 的子类，它接受一个 Application 对象作为构造函数参数，存储在实例变量 $app 中。
+
+注入所有基础 Service Provider
 
 在 register 方法中，每个ServiceProvider被调用了自身的 register 方法。在tServiceProvider 中：
 
