@@ -5,16 +5,20 @@ date:   2016-12-12  12:11 +0800
 categories: 遍历
 tags:  php函数 遍历
 author: Aspirezh
+mathjax: true
 ---
 
 * content
 {:toc}
 
+
+
+
 初学php遇到的一个问题，以后会补充
 遍历文件夹，遍历什么都一样
 
 
-    <code>
+```
     function my_scandir($dir){
     $files = array();
     if ( $handle = opendir($dir)){
@@ -33,7 +37,7 @@ author: Aspirezh
     }
     $files=my_scandir('D:\www\moning');
     print_r($files);
-    <code>
+```
     
     
     
