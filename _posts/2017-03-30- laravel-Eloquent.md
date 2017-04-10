@@ -19,6 +19,7 @@ mathjax: true
 ## 理解
 
 laravel Eloquent:Collection
+
 ###详细文档地址
 
 [链接](https://laravel.com/docs/5.3/eloquent-collections)
