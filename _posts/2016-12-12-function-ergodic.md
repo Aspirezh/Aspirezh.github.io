@@ -11,14 +11,12 @@ mathjax: true
 * content
 {:toc}
 
-
-
-
-##这个
 初学php遇到的一个问题，以后会补充
 遍历文件夹，遍历什么都一样
 
 
+
+##代码
 ```
     function my_scandir($dir){
     $files = array();
