@@ -73,8 +73,10 @@ $collapsed->all();
 ```
 4 count()
 不多说，计数用的
+
 5 first()
 取第一行的值，数据库如果取一行值的话比较好用
+
 6 flatten()
 flatten方法将多维度的集合变成一维
 
